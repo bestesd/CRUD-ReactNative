@@ -1,4 +1,4 @@
-Este projeto é um aplicativo de planejamento de eventos desenvolvido em React Native usando o ambiente Expo. Ele permite que os usuários criem, visualizem, atualizem e excluam eventos de forma fácil e eficiente.
+Este projeto é um aplicativo de planejamento de eventos (todo list) desenvolvido em React Native usando o ambiente Expo. Ele permite que os usuários criem, visualizem, atualizem e excluam eventos de forma fácil e eficiente.
 
 Pontos Principais:
 - Criado com a framework react native permitindo a renderização nativa em android e ios.
