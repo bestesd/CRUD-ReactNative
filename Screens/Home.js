@@ -78,8 +78,10 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.outContainer}></View>
+      <View style={styles.inContainer}>
       <View style={styles.formContainer}>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           placeholder="Adicione um Evento"
           placeholderTextColor="#aaaaaa"
@@ -87,8 +89,8 @@ const Home = () => {
           value={addData}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-        />
-        <TouchableOpacity style={styles.button} onPress={addTodo}>
+        /> */}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Create')}>
           <Text style={styles.buttonText}>Novo</Text>
         </TouchableOpacity>
       </View>
@@ -108,6 +110,9 @@ const Home = () => {
           </View>
         )}
       />
+      </View>
+      <View style={styles.outContainer}></View>
+
     </View>
   );
 };
@@ -115,13 +120,21 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'blue',  },
+  inContainer: {
+    flex: 5,
     backgroundColor: '#fff',
     padding: 20,
+    borderRadius:10
   },
   formContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    margin: 30,
+  },
+  outContainer:{
+    flex:1,
+    backgroundColor:'blue',
   },
   input: {
     height: 40,
@@ -132,14 +145,23 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 18,
   },
+  // button: {
+  //   height: 40,
+  //   borderRadius: 5,
+  //   backgroundColor: '#3498db',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: 60,
+  // },
   button: {
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: '#3498db',
+    width: '100%',
+    borderRadius: 4,
+    paddingVertical: 8,
+    marginTop: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 60,
-  },
+    backgroundColor: '#3498db',
+},
   buttonText: {
     color: 'white',
     fontSize: 18,
