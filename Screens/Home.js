@@ -1,13 +1,15 @@
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Keyboard, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { firebase } from '../config';
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Keyboard, Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { TextInputMask } from 'react-native-masked-text';
+import { firebase } from '../config';
 
 const Home = () => {
   const [todos, setTodos] = useState([]);
   const todoRef = firebase.firestore().collection('todos');
   const [addData, setAddData] = useState('');
+  const [addDateTime, setAddDateTime] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -16,12 +18,12 @@ const Home = () => {
       .onSnapshot((querySnapshot) => {
         const todos = [];
         querySnapshot.forEach((doc) => {
-          const { heading, completed, createdAt } = doc.data();
+          const { heading, completed, dateTime } = doc.data();
           todos.push({
             id: doc.id,
             heading,
             completed,
-            createdAt,
+            dateTime,
           });
         });
         setTodos(todos);
@@ -63,25 +65,28 @@ const Home = () => {
         heading: addData,
         completed: false,
         createdAt: timestamp,
+        dateTime: addDateTime || '',
       };
+
       todoRef
         .add(data)
         .then(() => {
           setAddData('');
+          setAddDateTime('');
           Keyboard.dismiss();
         })
         .catch((error) => {
           alert(error);
         });
+    } else {
+      alert('Por favor, preencha o campo "Adicione um Evento".');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.outContainer}></View>
-      <View style={styles.inContainer}>
+    <View style={{ flex: 1 }}>
       <View style={styles.formContainer}>
-        {/* <TextInput
+        <TextInput
           style={styles.input}
           placeholder="Adicione um Evento"
           placeholderTextColor="#aaaaaa"
@@ -89,111 +94,121 @@ const Home = () => {
           value={addData}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-        /> */}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Create')}>
+        />
+        <TextInputMask
+          style={styles.input}
+          placeholder="Data e Hora (opcional)"
+          placeholderTextColor="#aaaaaa"
+          keyboardType="numeric"
+          onChangeText={(dateTime) => setAddDateTime(dateTime)}
+          value={addDateTime}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          textAlign="right" 
+          type={'datetime'}
+          options={{
+            format: 'DD/MM/YYYY HH:mm',
+          }}
+        />
+        <TouchableOpacity style={styles.button} onPress={addTodo}>
           <Text style={styles.buttonText}>Novo</Text>
         </TouchableOpacity>
       </View>
       <FlatList
         data={todos}
-        numColumns={1}
+        numColumns={2}
         renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Pressable style={styles.todoContainer} onPress={() => navigation.navigate('Detail', { item })}>
-              <FontAwesome name="trash-o" color="red" onPress={() => deleteTodo(item)} style={styles.todoIcon} />
-              <FontAwesome name="check" color={item.completed ? 'green' : 'gray'} onPress={() => toggleTaskCompletion(item)} style={styles.todoIcon} />
+          <View style={styles.container}>
+            <Pressable
+              style={styles.innerContainer}
+              onPress={() => navigation.navigate('Detail', { item })}
+            >
+              <FontAwesome
+                name="trash-o"
+                color="red"
+                onPress={() => deleteTodo(item)}
+                style={styles.todoIcon}
+              />
+              <FontAwesome
+                name="check"
+                color={item.completed ? 'green' : 'gray'}
+                onPress={() => toggleTaskCompletion(item)}
+                style={styles.todoIcon}
+              />
               <View style={styles.textContainer}>
-                <Text style={styles.itemHeading}>{item.heading[0].toUpperCase() + item.heading.slice(1)}</Text>
-                <Text style={styles.itemDate}>{new Date(item.createdAt?.toDate()).toLocaleString()}</Text>
+                <Text style={styles.itemHeading}>
+                  {item.heading ? item.heading[0].toUpperCase() + item.heading.slice(1) : ''}
+                </Text>
+                <Text>{item.dateTime}</Text>
               </View>
             </Pressable>
           </View>
         )}
       />
-      </View>
-      <View style={styles.outContainer}></View>
-
     </View>
   );
 };
 
+export default Home;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'blue',  },
-  inContainer: {
-    flex: 5,
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius:10
-  },
-  formContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    margin: 30,
-  },
-  outContainer:{
-    flex:1,
-    backgroundColor:'blue',
-  },
-  input: {
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: '#f2f2f2',
-    paddingLeft: 10,
-    flex: 1,
-    marginRight: 10,
-    fontSize: 18,
-  },
-  // button: {
-  //   height: 40,
-  //   borderRadius: 5,
-  //   backgroundColor: '#3498db',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   width: 60,
-  // },
-  button: {
-    width: '100%',
-    borderRadius: 4,
-    paddingVertical: 8,
-    marginTop: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#3498db',
-},
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  itemContainer: {
-    marginBottom: 10,
-    padding: 15,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-  },
-  todoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  todoIcon: {
-    marginRight: 10,
-    fontSize: 22,
-  },
-  textContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#e5e5e5',
+    padding: 15,
+    margin: 5,
+    marginHorizontal: 10,
+    width: '48%', // Ajuste para 48% para deixar um pequeno espaço entre os itens
+  },
+  innerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textContainer: {
+    marginLeft: 10,
   },
   itemHeading: {
     fontWeight: 'bold',
+    fontSize: 18,
+    marginRight: 22,
+  },
+  dateTimeContainer: {
+    marginLeft: 'auto',
+  },
+  formContainer: {
+    flexDirection: 'row',
+    height: 80,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 100,
+  },
+  input: {
+    height: 48,
+    borderRadius: 5,
+    overflow: 'hidden',
+    backgroundColor: 'white',
+    paddingLeft: 16,
+    flex: 1,
+    marginRight: 5,
+  },
+  button: {
+    height: 47,
+    borderRadius: 5,
+    backgroundColor: '#788eec',
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
     fontSize: 20,
   },
-  itemDate: {
-    color: '#666',
-    fontSize: 16,
+  todoIcon: {
+    marginTop: 5,
+    fontSize: 20,
+    marginLeft: 14,
   },
 });
-
-export default Home;
