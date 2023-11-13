@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
 import { firebase } from '../config';
 import { useNavigation } from '@react-navigation/native';
-import { TextInputMask } from 'react-native-masked-text'; // Importe o TextInputMask
+import { TextInputMask } from 'react-native-masked-text';
 
 const Detail = ({ route }) => {
   const todoRef = firebase.firestore().collection('todos');
   const [textHeading, onChangeHeadingText] = useState(route.params.item.name);
-  const [textDateTime, onChangeTextDateTime] = useState(route.params.item.dateTime); // Adicione o estado para a nova data/hora
+  const [textDateTime, onChangeTextDateTime] = useState(route.params.item.dateTime);
   const navigation = useNavigation();
 
   const updateTodo = () => {
@@ -16,7 +16,7 @@ const Detail = ({ route }) => {
         .doc(route.params.item.id)
         .update({
           heading: textHeading,
-          dateTime: textDateTime, // Atualize a data/hora
+          dateTime: textDateTime,
         })
         .then(() => {
           navigation.navigate('Home');

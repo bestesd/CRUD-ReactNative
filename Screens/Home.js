@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 5,
     marginHorizontal: 10,
-    width: '48%', // Ajuste para 48% para deixar um pequeno espaço entre os itens
+    width: '50%',
   },
   innerContainer: {
     flexDirection: 'row',
