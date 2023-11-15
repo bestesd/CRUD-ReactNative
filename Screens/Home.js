@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Keyboard, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+  Pressable,
+} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text';
@@ -44,9 +53,7 @@ const Home = () => {
 
   const toggleTaskCompletion = (todo) => {
     const updatedTodos = todos.map((item) =>
-      item.id === todo.id
-        ? { ...item, completed: !item.completed }
-        : item
+      item.id === todo.id ? { ...item, completed: !item.completed } : item
     );
     setTodos(updatedTodos);
 
@@ -136,8 +143,10 @@ const Home = () => {
                 style={styles.todoIcon}
               />
               <View style={styles.textContainer}>
-                <Text style={styles.itemHeading}>
-                  {item.heading ? item.heading[0].toUpperCase() + item.heading.slice(1) : ''}
+                <Text style={styles.itemHeading} numberOfLines={null} ellipsizeMode="tail">
+                  {item.heading && item.heading.length > 47
+                    ? item.heading.match(/.{1,47}/g).join('\n')
+                    : item.heading}
                 </Text>
                 <Text>{item.dateTime}</Text>
               </View>
