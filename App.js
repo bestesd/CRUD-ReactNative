@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Screens/Home';
 import Detail from './Screens/Detail';
 import Create from './Screens/Create';
+import AuthComponent from './Screens/AuthComponent';
 
 const Stack = createStackNavigator ();
 
@@ -22,6 +23,10 @@ export default function App(){
        <Stack.Screen
          name='Create'
          component={Create}
+       />
+       <Stack.Screen
+         name='AuthComponent'
+         component={AuthComponent}
        />
      </Stack.Navigator>
     </NavigationContainer>
