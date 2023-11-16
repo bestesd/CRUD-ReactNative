@@ -13,11 +13,9 @@ const AuthComponent = () => {
       .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-
-        // Adiciona informações adicionais do usuário à coleção 'users'
+// COLEÇÃO DE USERS
         firebase.firestore().collection('users').doc(user.uid).set({
           email: email,
-          // Outras informações que você deseja armazenar
         });
 
         Alert.alert('Cadastro realizado com sucesso!');
