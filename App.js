@@ -5,6 +5,7 @@ import Home from './Screens/Home';
 import Detail from './Screens/Detail';
 import Create from './Screens/Create';
 import AuthComponent from './Screens/AuthComponent';
+import LogScreen from './Screens/LogScreen';
 
 const Stack = createStackNavigator ();
 
@@ -27,6 +28,10 @@ export default function App(){
        <Stack.Screen
          name='AuthComponent'
          component={AuthComponent}
+       />
+        <Stack.Screen
+         name='LogScreen'
+         component={LogScreen}
        />
      </Stack.Navigator>
     </NavigationContainer>

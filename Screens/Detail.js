@@ -6,20 +6,28 @@ import { TextInputMask } from 'react-native-masked-text';
 
 const Detail = ({ route }) => {
   const todoRef = firebase.firestore().collection('todos');
-  const [textHeading, onChangeHeadingText] = useState(route.params.item.name);
+  const [textHeading, onChangeHeadingText] = useState(route.params.item.heading);
   const [textDateTime, onChangeTextDateTime] = useState(route.params.item.dateTime);
   const navigation = useNavigation();
 
   const updateTodo = () => {
     if (textHeading && textHeading.length > 0) {
+      const updatedData = {
+        heading: textHeading,
+        dateTime: textDateTime,
+      };
+
       todoRef
         .doc(route.params.item.id)
-        .update({
-          heading: textHeading,
-          dateTime: textDateTime,
-        })
+        .update(updatedData)
         .then(() => {
           navigation.navigate('Home');
+
+          const logRef = firebase.firestore().collection('log');
+          logRef.add({
+            action: `Evento atualizado: ${textHeading}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          });
         })
         .catch((error) => {
           alert(error.message);

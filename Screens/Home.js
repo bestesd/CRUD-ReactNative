@@ -17,6 +17,7 @@ import { firebase } from '../config';
 const Home = () => {
   const [todos, setTodos] = useState([]);
   const todoRef = firebase.firestore().collection('todos');
+  const logRef = firebase.firestore().collection('log');
   const [addData, setAddData] = useState('');
   const [addDateTime, setAddDateTime] = useState('');
   const navigation = useNavigation();
@@ -45,6 +46,11 @@ const Home = () => {
       .delete()
       .then(() => {
         alert('Deletado');
+
+        logRef.add({
+          action: `Evento deletado: ${todo.heading}`,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
       })
       .catch((error) => {
         alert(error);
@@ -60,6 +66,12 @@ const Home = () => {
     todoRef
       .doc(todo.id)
       .update({ completed: !todo.completed })
+      .then(() => {
+        logRef.add({
+          action: `Estado do evento alterado: ${todo.heading}`,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      })
       .catch((error) => {
         alert(error);
       });
@@ -81,6 +93,11 @@ const Home = () => {
           setAddData('');
           setAddDateTime('');
           Keyboard.dismiss();
+
+          logRef.add({
+            action: `Evento criado: ${addData}`,
+            timestamp,
+          });
         })
         .catch((error) => {
           alert(error);
@@ -88,6 +105,10 @@ const Home = () => {
     } else {
       alert('Por favor, preencha o campo "Adicione um Evento".');
     }
+  };
+
+  const goToLogScreen = () => {
+    navigation.navigate('LogScreen');
   };
 
   return (
@@ -111,7 +132,7 @@ const Home = () => {
           value={addDateTime}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
-          textAlign="right" 
+          textAlign="right"
           type={'datetime'}
           options={{
             format: 'DD/MM/YYYY HH:mm',
@@ -154,11 +175,13 @@ const Home = () => {
           </View>
         )}
       />
+      <TouchableOpacity onPress={goToLogScreen} style={styles.logButton}>
+        <FontAwesome name="list-alt" size={24} color="black" />
+        <Text style={styles.logButtonText}>Logs</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -220,4 +243,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 14,
   },
+
+  logButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 8,
+    borderRadius: 5,
+    elevation: 3,
+  },
+  logButtonText: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
 });
+
+export default Home;
+
