@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Keyboard,
   Pressable,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -16,11 +18,24 @@ import { firebase } from '../config';
 
 const Home = () => {
   const [todos, setTodos] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
   const todoRef = firebase.firestore().collection('todos');
   const logRef = firebase.firestore().collection('log');
   const [addData, setAddData] = useState('');
   const [addDateTime, setAddDateTime] = useState('');
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const updateWindowDimensions = () => {
+      setWindowWidth(Dimensions.get('window').width);
+    };
+
+    Dimensions.addEventListener('change', updateWindowDimensions);
+
+    return () => {
+      Dimensions.removeEventListener('change', updateWindowDimensions);
+    };
+  }, []);
 
   useEffect(() => {
     todoRef
@@ -162,14 +177,21 @@ const Home = () => {
                 onPress={() => toggleTaskCompletion(item)}
                 style={styles.todoIcon}
               />
-              <View style={styles.textContainer}>
-                <Text style={styles.itemHeading} numberOfLines={null} ellipsizeMode="tail">
-                  {item.heading && item.heading.length > 47
-                    ? item.heading.match(/.{1,47}/g).join('\n')
-                    : item.heading}
-                </Text>
-                <Text>{item.dateTime}</Text>
-              </View>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.itemHeading} numberOfLines={null} ellipsizeMode="tail">
+                    {item.heading &&
+                      (windowWidth < 768
+                        ? item.heading.length > 15
+                          ? item.heading.match(/.{1,15}/g).join('\n')
+                          : item.heading
+                        : item.heading.length > 110
+                        ? item.heading.match(/.{1,110}/g).join('\n')
+                        : item.heading)}
+                  </Text>
+                  <Text>{item.dateTime}</Text>
+                </View>
+              </ScrollView>
             </Pressable>
           </View>
         )}
@@ -185,6 +207,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
   },
   formContainer: {
     flexDirection: 'row',
@@ -215,11 +238,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   itemContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: '#e5e5e5',
     padding: 15,
     margin: 5,
     marginHorizontal: 10,
-    width: '100%',
   },
   innerContainer: {
     flexDirection: 'row',
