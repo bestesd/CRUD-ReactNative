@@ -112,7 +112,7 @@ const Home = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -144,9 +144,8 @@ const Home = () => {
       </View>
       <FlatList
         data={todos}
-        numColumns={2}
         renderItem={({ item }) => (
-          <View style={styles.container}>
+          <View style={styles.itemContainer}>
             <Pressable
               style={styles.innerContainer}
               onPress={() => navigation.navigate('Detail', { item })}
@@ -186,29 +185,6 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#e5e5e5',
-    padding: 15,
-    margin: 5,
-    marginHorizontal: 10,
-    width: '50%',
-  },
-  innerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textContainer: {
-    marginLeft: 10,
-  },
-  itemHeading: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginRight: 22,
-  },
-  dateTimeContainer: {
-    marginLeft: 'auto',
   },
   formContainer: {
     flexDirection: 'row',
@@ -238,12 +214,33 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
+  itemContainer: {
+    backgroundColor: '#e5e5e5',
+    padding: 15,
+    margin: 5,
+    marginHorizontal: 10,
+    width: '100%',
+  },
+  innerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textContainer: {
+    marginLeft: 10,
+  },
+  itemHeading: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginRight: 22,
+  },
+  dateTimeContainer: {
+    marginLeft: 'auto',
+  },
   todoIcon: {
     marginTop: 5,
     fontSize: 20,
     marginLeft: 14,
   },
-
   logButton: {
     position: 'absolute',
     top: 10,
@@ -262,4 +259,3 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
-
