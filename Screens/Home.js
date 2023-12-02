@@ -126,6 +126,21 @@ const Home = () => {
     navigation.navigate('LogScreen');
   };
 
+  const handleLogout = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log('Logout realizado com sucesso!');
+        
+        navigation.replace('AuthComponent');
+      })
+      .catch((error) => {
+        console.error('Erro no logout:', error.message);
+        alert(`Erro no logout: ${error.message}`);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
@@ -199,6 +214,12 @@ const Home = () => {
       <TouchableOpacity onPress={goToLogScreen} style={styles.logButton}>
         <FontAwesome name="list-alt" size={24} color="black" />
         <Text style={styles.logButtonText}>Logs</Text>
+      </TouchableOpacity>
+
+      {/* Botão Sair */}
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <FontAwesome name="sign-out" size={24} color="black" />
+        <Text style={styles.logoutButtonText}>Sair</Text>
       </TouchableOpacity>
     </View>
   );
@@ -279,6 +300,21 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   logButtonText: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 10,
+    right: 100,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 8,
+    borderRadius: 5,
+    elevation: 3,
+  },
+  logoutButtonText: {
     marginLeft: 8,
     fontSize: 16,
   },
