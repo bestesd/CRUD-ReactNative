@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Screens/Home';
 import Detail from './Screens/Detail';
 import Create from './Screens/Create';
-import AuthComponent from './Screens/AuthComponent';
+import Login from './Screens/Login';
 import LogScreen from './Screens/LogScreen';
 
 import { firebase } from './config';
@@ -34,7 +34,7 @@ export default function App() {
             <Stack.Screen name='LogScreen' component={LogScreen} />
           </>
         ) : (
-          <Stack.Screen name='AuthComponent' component={AuthComponent} />
+          <Stack.Screen name='Login' component={Login} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
